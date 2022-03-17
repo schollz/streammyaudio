@@ -72,7 +72,7 @@ func main() {
          |^|..../:::O::::::::::O:::\....|
          |/` + "`" + `---/--------------------` + "`" + `---|
          ` + "`" + `.___/ /====/ /=//=/ /====/____/
-              ` + "`" + `--------------------'`)
+              ` + "`" + `--------------------'` + "\n\n\n")
 	err := cast()
 	if err != nil {
 		fmt.Println("        no stream initiated, goodbye.")
@@ -100,7 +100,7 @@ func getStreamInfo() (err error) {
 
 	prompt2 := promptui.Select{
 		Label: "advertise stream?",
-		Items: []string{"no", "yes"},
+		Items: []string{"no advertise", "yes advertise"},
 	}
 
 	var result string
@@ -108,8 +108,7 @@ func getStreamInfo() (err error) {
 	if err != nil {
 		return
 	}
-	fmt.Printf("advertise: %q\n", result)
-	if result == "yes" {
+	if strings.Contains("result", "yes") {
 		streamAdvertise = "true"
 	} else {
 		streamAdvertise = "false"
@@ -117,14 +116,13 @@ func getStreamInfo() (err error) {
 
 	prompt3 := promptui.Select{
 		Label: "archive stream (keep after finished)?",
-		Items: []string{"no", "yes"},
+		Items: []string{"no archive", "yes archive"},
 	}
 
 	_, result, err = prompt3.Run()
 	if err != nil {
 		return
 	}
-	fmt.Printf("archive: %q\n", result)
 	if result == "yes" {
 		streamArchive = "true"
 	} else {
@@ -196,6 +194,36 @@ func windowsSelectAudioDevice() (cmd *exec.Cmd, err error) {
 	return
 }
 
+func linuxSelectAudioDevice() (cmd *exec.Cmd, err error) {
+	cmd = exec.Command("cat", "/proc/asound/cards")
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		return
+	}
+
+	inputDeviceNames := []string{}
+	for _, line := range strings.Split(string(output), "\n") {
+		if strings.Contains(line, "[") {
+			inputDeviceNames = append(inputDeviceNames, strings.TrimSpace(line))
+		}
+	}
+
+	prompt := promptui.Select{
+		Label: "Select input device",
+		Items: inputDeviceNames,
+		Size:  len(inputDeviceNames),
+	}
+
+	var i int
+	i, streamDevice, err = prompt.Run()
+
+	if err != nil {
+		return
+	}
+	cmd = exec.Command("ffmpeg", "-f", "alsa", "-i", fmt.Sprintf("hw:%d", i), "-f", "mp3", "-")
+	return
+}
+
 func cast() (err error) {
 	err = getStreamInfo()
 	if err != nil {
@@ -209,7 +237,7 @@ func cast() (err error) {
 	case "darwin":
 		fmt.Println("MAC operating system")
 	case "linux":
-		cmd = exec.Command("ffmpeg", "-f", "alsa", "-i", "hw:0", "-f", "mp3", "-")
+		cmd, err = linuxSelectAudioDevice()
 	default:
 		fmt.Printf("%s.\n", runtime.GOOS)
 	}
@@ -217,10 +245,12 @@ func cast() (err error) {
 		return
 	}
 
+	canceled := false
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt)
 	go func() {
 		for _ = range c {
+			canceled = true
 			// sig is a ^C, handle it
 			cmd.Process.Kill()
 		}
@@ -258,13 +288,13 @@ func cast() (err error) {
 
 	go func() {
 		_, err = client.Do(req)
-		if err != nil {
+		if err != nil && !canceled {
 			fmt.Println("problem connecting: %s", err.Error())
 			cmd.Process.Kill()
 		}
 	}()
 
-	fmt.Printf("\n\n\n        current streaming %s streamDevice at\n", streamDevice)
+	fmt.Printf("\n\n\n        now streaming '%s' at\n", streamDevice)
 	fmt.Printf("\t        https://broadcast.schollz.com/" + streamName + ".mp3\n\n\n")
 	cmd.Wait()
 	fmt.Println("goodbye.")
