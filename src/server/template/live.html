@@ -5,7 +5,7 @@
 </p>
 {{ if .Items}}
 <h2>Live broadcasts:</h2>
-{{range .Items}}<a href="/{{ call $.StripMP3 . }}">{{ . }}</a><br> <audio controls preload="none">
+{{range .Items}}<a href="/{{ call $.StripMP3 . }}">{{ call $.StripMP3 . }}</a><br> <audio controls preload="none">
     <source src="/{{ . }}?r={{$.Rand}}" type="audio/mpeg">
     Your browser does not support the audio element.
 </audio><br><br>

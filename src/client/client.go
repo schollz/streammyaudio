@@ -203,7 +203,7 @@ func (c *Client) cast() (err error) {
 	}()
 
 	fmt.Printf("\n\n\n        now streaming '%s' at\n", c.DeviceName)
-	fmt.Printf("\t        %s/%s.mp3\n\n\n", c.Server, c.Name)
+	fmt.Printf("\t        %s/%s\n\n\n", c.Server, c.Name)
 	fmt.Printf("        press Ctl+C to quit\n")
 
 	cmd.Wait()
