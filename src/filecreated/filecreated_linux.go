@@ -1,22 +1,12 @@
-package main
+package filecreated
 
 import (
-	_ "embed"
 	"os"
 	"syscall"
 	"time"
 )
 
-//go:embed ffmpeg
-var b []byte
-
-var ffmpegBinary string
-
-func init() {
-	ffmpegBinary = "ffmpeg"
-}
-
-func fileCreated(fname string) time.Time {
+func FileCreated(fname string) time.Time {
 	finfo, _ := os.Stat(fname)
 	stat_t := finfo.Sys().(*syscall.Stat_t)
 	return timespecToTime(stat_t.Ctim)
