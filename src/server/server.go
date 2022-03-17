@@ -46,6 +46,7 @@ type view struct {
 	Rand      string
 	Archived  []ArchivedFile
 	Message   string
+	StripMP3  func(string) string
 }
 
 // Serve will start the server
@@ -64,6 +65,9 @@ func (s *Server) Run() (err error) {
 			Page:    page,
 			Message: msg,
 			Rand:    fmt.Sprintf("%d", rand.Int31()),
+			StripMP3: func(s string) string {
+				return strings.TrimSuffix(s, ".mp3")
+			},
 		}
 
 		switch page {

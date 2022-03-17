@@ -25,7 +25,7 @@ func init() {
 	flag.StringVar(&streamName, "cast-name", "", "cast stream name")
 	flag.StringVar(&streamAdvertise, "cast-advertise", "", "cast stream advertise (yes/no)")
 	flag.StringVar(&streamArchive, "cast-archive", "", "cast stream archive (yes/no)")
-	flag.StringVar(&streamServer, "cast-server", "https://broadcast.schollz.com", "cast server address")
+	flag.StringVar(&streamServer, "cast-server", "https://streamyouraudio.com", "cast server address")
 }
 
 func main() {

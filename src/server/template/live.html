@@ -1,11 +1,11 @@
 {{ define "live" }}
 {{ template "prebody" . }}
-{{ if .Items}}
-<h2>Live broadcasts:</h2>
 <p>
     If you want your stream to appear here, select "advertise" when choosing the settings.
 </p>
-{{range .Items}}<a href="/{{ . }}">{{ . }}</a><br> <audio controls preload="none">
+{{ if .Items}}
+<h2>Live broadcasts:</h2>
+{{range .Items}}<a href="/{{ call .StripMP3 . }}">{{ . }}</a><br> <audio controls preload="none">
     <source src="/{{ . }}?r={{$.Rand}}" type="audio/mpeg">
     Your browser does not support the audio element.
 </audio><br><br>
