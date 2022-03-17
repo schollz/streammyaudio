@@ -2,6 +2,8 @@ package ffmpeg
 
 import (
 	_ "embed"
+	"fmt"
+	log "github.com/schollz/logger"
 	"io/ioutil"
 	"os"
 )
@@ -9,11 +11,16 @@ import (
 //go:embed ffmpegmac
 var b []byte
 
-var loaded bool
+var loadedDarwin bool
+
+func init() {
+	fmt.Println("loaded ffmpeg ", len(b))
+}
 
 func Binary() string {
-	if !loaded {
-		loaded = true
+	log.Debugf("loaded ffmpeg: %d", len(b))
+	if !loadedDarwin {
+		loadedDarwin = true
 		ioutil.WriteFile("./ffmpeg", b, 0777)
 	}
 	return "./ffmpeg"

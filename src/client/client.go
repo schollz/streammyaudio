@@ -31,19 +31,19 @@ func (c *Client) Run() (err error) {
 	}()
 
 	clearscreen.ClearScreen()
-	fmt.Println("\n\n\n" + `            ____________________________
-          /|............................|
-         | |:                          :|
-         | |:                          :|
-         | |:     ,-.   _____   ,-.    :|
-         | |:    ( ` + "`" + `)) [_____] ( ` + "`" + `))   :|
-         |v|:     ` + "`" + `-` + "`" + `   ' ' '   ` + "`" + `-` + "`" + `    :|
-         |||:     ,______________.     :|
-         |||...../::::o::::::o::::\.....|
-         |^|..../:::O::::::::::O:::\....|
-         |/` + "`" + `---/--------------------` + "`" + `---|
-         ` + "`" + `.___/ /====/ /=//=/ /====/____/
-              ` + "`" + `--------------------'` + "\n\n\n")
+	fmt.Println("\n\n\n" + `███████╗████████╗██████╗ ███████╗ █████╗ ███╗   ███╗                        
+██╔════╝╚══██╔══╝██╔══██╗██╔════╝██╔══██╗████╗ ████║                        
+███████╗   ██║   ██████╔╝█████╗  ███████║██╔████╔██║                        
+╚════██║   ██║   ██╔══██╗██╔══╝  ██╔══██║██║╚██╔╝██║                        
+███████║   ██║   ██║  ██║███████╗██║  ██║██║ ╚═╝ ██║                        
+╚══════╝   ╚═╝   ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝     ╚═╝                        
+██╗   ██╗ ██████╗ ██╗   ██╗██████╗      █████╗ ██╗   ██╗██████╗ ██╗ ██████╗ 
+╚██╗ ██╔╝██╔═══██╗██║   ██║██╔══██╗    ██╔══██╗██║   ██║██╔══██╗██║██╔═══██╗
+ ╚████╔╝ ██║   ██║██║   ██║██████╔╝    ███████║██║   ██║██║  ██║██║██║   ██║
+  ╚██╔╝  ██║   ██║██║   ██║██╔══██╗    ██╔══██║██║   ██║██║  ██║██║██║   ██║
+   ██║   ╚██████╔╝╚██████╔╝██║  ██║    ██║  ██║╚██████╔╝██████╔╝██║╚██████╔╝
+   ╚═╝    ╚═════╝  ╚═════╝ ╚═╝  ╚═╝    ╚═╝  ╚═╝ ╚═════╝ ╚═════╝ ╚═╝ ╚═════╝ 
+                                                                            `)
 	err = c.cast()
 	if err != nil {
 		fmt.Println("        no stream initiated, goodbye.")
@@ -132,6 +132,42 @@ func (c *Client) linuxSelectAudioDevice() (cmd *exec.Cmd, err error) {
 	return
 }
 
+func (c *Client) darwinSelectAudioDevice() (cmd *exec.Cmd, err error) {
+	cmd = exec.Command(ffmpeg.Binary(), "-f", "avfoundation", "-list_devices", "true", "-i", "dummy")
+	output, _ := cmd.CombinedOutput()
+	inputDeviceNames := []string{}
+
+	haveAudioDevices := false
+	for _, line := range strings.Split(string(output), "\n") {
+		if strings.Contains(line, "audio devices") {
+			haveAudioDevices = true
+			continue
+		}
+		if strings.Contains(line, "AVFoundation") && haveAudioDevices {
+			parts := strings.Split(line, "]")
+			if len(parts) < 2 {
+				continue
+			}
+			name := parts[len(parts)-1]
+			inputDeviceNames = append(inputDeviceNames, strings.TrimSpace(name))
+		}
+	}
+
+	prompt := promptui.Select{
+		Label: "Select input device",
+		Items: inputDeviceNames,
+		Size:  len(inputDeviceNames),
+	}
+
+	var i int
+	i, c.DeviceName, err = prompt.Run()
+	if err != nil {
+		return
+	}
+	cmd = exec.Command(ffmpeg.Binary(), "-f", "avfoundation", "-i", fmt.Sprintf(":%d", i), "-f", "mp3", "-")
+	return
+}
+
 func (c *Client) cast() (err error) {
 	err = c.getStreamInfo()
 	if err != nil {
@@ -143,7 +179,7 @@ func (c *Client) cast() (err error) {
 	case "windows":
 		cmd, err = c.windowsSelectAudioDevice()
 	case "darwin":
-		fmt.Println("MAC operating system")
+		cmd, err = c.darwinSelectAudioDevice()
 	case "linux":
 		cmd, err = c.linuxSelectAudioDevice()
 	default:
@@ -202,9 +238,9 @@ func (c *Client) cast() (err error) {
 		}
 	}()
 
-	fmt.Printf("\n\n\n        now streaming '%s' at\n", c.DeviceName)
-	fmt.Printf("\t        %s/%s\n\n\n", c.Server, c.Name)
-	fmt.Printf("        press Ctl+C to quit\n")
+	fmt.Printf("\n\nnow streaming at\n")
+	fmt.Printf("\n%s/%s\n\n", c.Server, c.Name)
+	fmt.Printf("press Ctl+C to quit\n")
 
 	cmd.Wait()
 	fmt.Println("goodbye.")
