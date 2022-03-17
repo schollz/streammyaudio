@@ -12,8 +12,8 @@ import (
 	"time"
 
 	"github.com/manifoldco/promptui"
-	"github.com/schollz/streammyaudio/src/clearscreen"
-	"github.com/schollz/streammyaudio/src/ffmpeg"
+	"github.com/schollz/streamyouraudio/src/clearscreen"
+	"github.com/schollz/streamyouraudio/src/ffmpeg"
 )
 
 type Client struct {
@@ -204,6 +204,8 @@ func (c *Client) cast() (err error) {
 
 	fmt.Printf("\n\n\n        now streaming '%s' at\n", c.DeviceName)
 	fmt.Printf("\t        https://broadcast.schollz.com/" + c.Name + ".mp3\n\n\n")
+	fmt.Printf("        press Ctl+C to quit\n")
+
 	cmd.Wait()
 	fmt.Println("goodbye.")
 	time.Sleep(1 * time.Second)

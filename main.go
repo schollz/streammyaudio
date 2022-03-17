@@ -6,8 +6,8 @@ import (
 	"runtime"
 
 	log "github.com/schollz/logger"
-	"github.com/schollz/streammyaudio/src/client"
-	"github.com/schollz/streammyaudio/src/server"
+	"github.com/schollz/streamyouraudio/src/client"
+	"github.com/schollz/streamyouraudio/src/server"
 )
 
 var streamName, streamAdvertise, streamArchive, streamServer string
