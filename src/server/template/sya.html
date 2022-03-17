@@ -1,7 +1,7 @@
 {{ define "sya" }}
 {{ template "prebody" . }}
 <p>
-    <strong>What <em>is</em> this?</strong> sya lets you livestream audio from your computer to this website. The software is simple as double-clicking. That's it. Use it to play demos for people you know, or make a live podcast, or stream your piano practice, or whatever you'd like.
+    <strong>What <em>is</em> this?</strong> sya lets you livestream audio from your computer to this website as easily as possible. Use it to play demos for people you know, or make a live podcast, or stream your piano practice, or whatever you'd like.
 </p>
 <p>
     <strong>What <em>isn't</em> this?</strong> It's not social media. Not Twitch, not YouTube, not "Meta". There is no login, no usernames, no passwords, no authentication, no costs, no branding.
@@ -10,7 +10,81 @@
     <strong>No logins?</strong> No logins. You give your stream a name which serves as the link for others to listen. By default the stream names are not shared, but you there is an option to "advertise" the so it will be featured on the <a href="/live"><em>live</em></a> page.
 </p>
 <p>
-    <strong>It's free?</strong> It is free. This is a simple website that costs me very little too run. Is yours like to donate to this site here's my Bitcoin address
+    <strong>It's free?</strong> It is free. This is a simple website that costs me very little too run. If you find this site useful, consider <a href="https://github.com/sponsors/schollz">sponsoring me</a>.
+</p>
+<strong>How do I start?</strong> Start by by downloading a client or using common command-line tools to send audio.
+</p>
+<h2>get started</h2>
+<p>
+    You can get started by using common command-line tools or downloading a program that makes it easy to just double-click and go. If you don't want to download a release, you can always build the program yourself from <a href="https://github.com/schollz/streamyouraudio">source</a>.
+</p>
+<div class="bordered">
+    <details class="help">
+        <summary class="help">
+            <h3>No download</h3>
+        </summary>
+        <p>
+            You don't have to download anything to use this website. As long as you have <code>curl</code> and either <code>ffmpeg</code> or <code>vlc</code> then you can stream your audio to this website.
+        </p>
+        <p>
+            <strong>Create station using <code>ffmpeg</code></strong> with a simple line of code.
+        </p>
+        <pre><code>> # linux
+> ffmpeg -f alsa -i hw:0 -f mp3 - | \
+    curl -s -k -H "Transfer-Encoding: chunked" -X POST -T - \
+    "https://streamyouraudio.com/YOURSTATIONNAME.mp3?stream=true&advertise=true"</code></pre>
+        <p>
+            <strong>Create station using <code>vlc</code></strong> with a simple line of code.
+        </p>
+        <pre><code>> # linux
+> vlc -I dummy alsa://plughw:0,0 --sout='#transcode{vcodec=none,acodec=mp3,ab=256,channels=2,samplerate=44100,scodec=none}:standard{access=file,mux=mp3,dst=-}' --no-sout-all --sout-keep | \
+    curl -k -H "Transfer-Encoding: chunked" -X POST -T -  'https://streamyouraudio.com/YOURSTATIONNAME.mp3?stream=true&advertise=true'  
+> # mac os
+> vlc -I dummy -vvv qtsound:// --sout='#transcode{vcodec=none,acodec=mp3,ab=256,channels=2,samplerate=44100,scodec=none}:standard{access=file,mux=mp3,dst=-}' --no-sout-all --sout-keep | \
+    curl -k -H "Transfer-Encoding: chunked" -X POST -T -  'https://streamyouraudio.com/YOURSTATIONNAME.mp3?stream=true&advertise=true'</code></pre>
+    </details>
+</div>
+<div class="bordered mt1">
+    <details class="help">
+        <summary class="help">
+            <h3>Windows</h3>
+        </summary>
+        <p>
+            <strong>What <em>is</em> this?</strong> sma makes it easy to livestream your audio from any computer using a simple programs you just double click. That's it. Make a live podcast, stream your piano practice, whatever you'd like.
+        </p>
+    </details>
+</div>
+<div class="bordered mt1">
+    <details class="help">
+        <summary class="help">
+            <h3>Linux</h3>
+        </summary>
+        <p>
+            <strong>What <em>is</em> this?</strong> sma makes it easy to livestream your audio from any computer using a simple programs you just double click. That's it. Make a live podcast, stream your piano practice, whatever you'd like.
+        </p>
+    </details>
+</div>
+<div class="bordered mt1">
+    <details class="help">
+        <summary class="help">
+            <h3>Source</h3>
+        </summary>
+        <p>
+            Its easy to build from source. First download [Go](https://go.dev/dl/) for your operating system. Then you can clone and build the repostiory.
+        </p>
+        <pre><code>
+> git clone https://github.com/schollz/streamyouraudio
+> cd streamyouraudio
+> go build -v
+        </code></pre>
+        <p>Make sure you also have <code>ffmpeg</code> installed.</p>
+        <pre><code>
+> sudo apt install ffmpeg
+        </code></pre>
+    </details>
+</div>
+<p>
+    If you have any problems with the download please feel free to <a href="https://github.com/schollz/streamyouraudio/issues/new/choose" target="_blank">create an issue on Github</a>.
 </p>
 {{ template "postbody" . }}
 {{end}}
