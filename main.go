@@ -10,7 +10,7 @@ import (
 	"github.com/schollz/streammyaudio/src/server"
 )
 
-var streamName, streamAdvertise, streamArchive string
+var streamName, streamAdvertise, streamArchive, streamServer string
 var flagDebug bool
 var flagPort int
 var flagFolder string
@@ -25,6 +25,7 @@ func init() {
 	flag.StringVar(&streamName, "cast-name", "", "cast stream name")
 	flag.StringVar(&streamAdvertise, "cast-advertise", "", "cast stream advertise (yes/no)")
 	flag.StringVar(&streamArchive, "cast-archive", "", "cast stream archive (yes/no)")
+	flag.StringVar(&streamServer, "cast-server", "https://broadcast.schollz.com", "cast server address")
 }
 
 func main() {
@@ -52,6 +53,7 @@ func main() {
 			Name:      streamName,
 			Archive:   streamArchive,
 			Advertise: streamAdvertise,
+			Server:    streamServer,
 		}
 		err = c.Run()
 	}

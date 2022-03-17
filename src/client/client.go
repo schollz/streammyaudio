@@ -22,6 +22,7 @@ type Client struct {
 	Archive    string
 	DeviceName string
 	Device     string
+	Server     string
 }
 
 func (c *Client) Run() (err error) {
@@ -182,10 +183,8 @@ func (c *Client) cast() (err error) {
 	req := &http.Request{
 		Method: "POST",
 		URL: &url.URL{
-			Scheme: "http",
-			Host:   "localhost:9222",
-			// Scheme:   "https",
-			// Host:     "broadcast.schollz.com",
+			Scheme:   strings.Split(c.Server, "://")[0],
+			Host:     strings.Split(c.Server, "://")[1],
 			Path:     "/" + c.Name + ".mp3",
 			RawQuery: "stream=true&advertise=" + c.Advertise + "&archive=" + c.Archive,
 		},
