@@ -108,7 +108,7 @@ func getStreamInfo() (err error) {
 	if err != nil {
 		return
 	}
-	if strings.Contains("result", "yes") {
+	if strings.Contains(result, "yes") {
 		streamAdvertise = "true"
 	} else {
 		streamAdvertise = "false"
@@ -123,7 +123,7 @@ func getStreamInfo() (err error) {
 	if err != nil {
 		return
 	}
-	if result == "yes" {
+	if strings.Contains(result, "yes") {
 		streamArchive = "true"
 	} else {
 		streamArchive = "false"
@@ -275,8 +275,10 @@ func cast() (err error) {
 	req := &http.Request{
 		Method: "POST",
 		URL: &url.URL{
-			Scheme:   "https",
-			Host:     "broadcast.schollz.com",
+			Scheme: "http",
+			Host:   "localhost:9222",
+			// Scheme:   "https",
+			// Host:     "broadcast.schollz.com",
 			Path:     "/" + streamName + ".mp3",
 			RawQuery: "stream=true&advertise=" + streamAdvertise + "&archive=" + streamArchive,
 		},
