@@ -18,7 +18,6 @@ import (
 	"sort"
 	"strings"
 	"sync"
-	"syscall"
 	"time"
 
 	"github.com/gabriel-vasile/mimetype"
@@ -77,6 +76,12 @@ func init() {
 
 func main() {
 	flag.Parse()
+	defer func() {
+		if runtime.GOOS != "windows" {
+			os.Remove(ffmpegBinary)
+		}
+	}()
+
 	// use all of the processors
 	runtime.GOMAXPROCS(runtime.NumCPU())
 	if flagDebug {
@@ -85,6 +90,8 @@ func main() {
 	} else {
 		log.SetLevel("info")
 	}
+
+	log.Debugf("ffmpeg binary: %s", ffmpegBinary)
 	var err error
 	if flagServer {
 		os.MkdirAll(flagFolder, os.ModePerm)
@@ -429,9 +436,7 @@ func listArchived(active map[string]struct{}) (afiles []ArchivedFile) {
 	}
 	for _, fname := range fnames {
 		_, onlyfname := path.Split(fname)
-		finfo, _ := os.Stat(fname)
-		stat_t := finfo.Sys().(*syscall.Stat_t)
-		created := timespecToTime(stat_t.Ctim)
+		created := fileCreated(fname)
 		if _, ok := active[onlyfname]; !ok {
 			afiles = append(afiles, ArchivedFile{
 				Filename:     onlyfname,
@@ -446,10 +451,6 @@ func listArchived(active map[string]struct{}) (afiles []ArchivedFile) {
 	})
 
 	return
-}
-
-func timespecToTime(ts syscall.Timespec) time.Time {
-	return time.Unix(int64(ts.Sec), int64(ts.Nsec))
 }
 
 func getStreamInfo() (err error) {
