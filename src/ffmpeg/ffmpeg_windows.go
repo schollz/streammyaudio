@@ -3,7 +3,7 @@ package ffmpeg
 import (
 	_ "embed"
 	"io/ioutil"
-	"time"
+	"os"
 )
 
 //go:embed ffmpeg.exe

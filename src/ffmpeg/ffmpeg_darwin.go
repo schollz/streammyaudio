@@ -3,10 +3,10 @@ package ffmpeg
 import (
 	_ "embed"
 	"io/ioutil"
-	"time"
+	"os"
 )
 
-//go:embed ffmpeg
+//go:embed ffmpegmac
 var b []byte
 
 var loaded bool
