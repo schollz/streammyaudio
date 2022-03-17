@@ -1,0 +1,13 @@
+{{ define "live" }}
+{{ template "prebody" . }}
+{{ if .Items}}
+<h2>Live broadcasts:</h2>
+{{range .Items}}<a href="/{{ . }}">{{ . }}</a><br> <audio controls preload="none">
+    <source src="/{{ . }}?r={{$.Rand}}" type="audio/mpeg">
+    Your browser does not support the audio element.
+</audio><br><br>
+{{end}}
+{{else}}
+<h2>No live broadcasts.</h2>
+{{end}}{{ template "postbody" . }}
+{{end}}

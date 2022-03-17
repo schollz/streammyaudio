@@ -1,0 +1,27 @@
+{{ define "archive" }}
+{{ template "prebody" . }}
+{{if .Archived}}
+<h2>Archived broadcasts:</h2>
+<p><small>click ❌ to remove an archive, ✎ to rename an archive (<em>maybe don't remove/rename ones that you didn't create</em>).</small></p>
+{{range .Archived}}<a href="/{{ .FullFilename }}">{{ .Filename }}</a> <small>({{.Created.Format "Jan 02, 2006 15:04:05 UTC"}},
+    <details class="special">
+        <summary>❌</summary>are you sure? <details>
+            <summary>click->👍</summary>absolutely sure? <a class="delete" href="/{{ .FullFilename }}?remove=true">🗑️</a>
+        </details>
+    </details>
+    <details class="special">
+        <summary>✎</summary>
+        <form method="get" action="/{{ .FullFilename }}">
+            <input type=hidden name=rename value=true>
+            Rename to: <input type=text name=newname value="{{ .Filename }}">
+            <input type=submit>
+        </form>
+    </details>)
+</small><br> <audio controls preload="none">
+    <source src="/{{ .FullFilename }}?r={{$.Rand}}" type="audio/mpeg">
+    Your browser does not support the audio element.
+</audio><br><br>
+{{end}}
+{{else}}<h2>Nothing archived.</h2>{{end}}
+{{ template "postbody" . }}
+{{end}}

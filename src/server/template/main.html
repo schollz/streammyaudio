@@ -1,0 +1,61 @@
+{{ define "main" }}
+{{ template "prebody"}}
+{{ with .Message }}
+<div class="bordered">
+    {{.}}
+</div>
+{{end}}
+<p>
+    <strong>What <em>is</em> this?</strong> sma makes it easy to livestream your audio from any computer using a simple programs you just double click. That's it. Make a live podcast, stream your piano practice, whatever you'd like.
+</p>
+<p>
+    <strong>What <em>isn't</em> this?</strong> It's not twitch, it's not YouTube. There is no login, no usernames, no passwords, no costs. There is no branding, no engagement.
+</p>
+<p>
+    <strong>No logins?</strong> No logins. Your steam is given a name which you can share with others to access it. You can also"advertise" you're steam so it will be featured on the "live" page.
+</p>
+<p>
+    <strong>It's free?</strong> It is free. This is a simple website that costs me very little too run. Is yours like to donate to this site here's my Bitcoin address
+</p>
+<details class="help">
+    <summary class="help">
+        <h2 style="font-size:1.5em;font-weight:700;position:relative;left:-0.4em;">How to broadcast?</h2>
+    </summary>
+    <p><strong>Its easy.</strong> Simply download the release for your system and double click on it! It will do the rest. If you don't want to download, you can <a href="https://github.com/schollz/cast">compile it yourself from source</a>.</p>
+    <p><strong>Is it secure?</strong> No - all the broadcasts will be going through this public server. If you'd like, you can easily <a href="https://github.com/schollz/broadcast-server">run your own server</a>, since everything is open source.</p>
+</details>
+{{ if .Items}}
+<h2>Live broadcasts:</h2>
+{{range .Items}}<a href="/{{ . }}">{{ . }}</a><br> <audio controls preload="none">
+    <source src="/{{ . }}?r={{$.Rand}}" type="audio/mpeg">
+    Your browser does not support the audio element.
+</audio><br><br>
+{{end}}
+{{else}}
+<h2>No live broadcasts.</h2>
+{{end}}
+{{if .Archived}}
+<h2>Archived broadcasts:</h2>
+<p><small>click ❌ to remove an archive, ✎ to rename an archive (<em>maybe don't remove/rename ones that you didn't create</em>).</small></p>
+{{range .Archived}}<a href="/{{ .FullFilename }}">{{ .Filename }}</a> <small>({{.Created.Format "Jan 02, 2006 15:04:05 UTC"}},
+    <details class="special">
+        <summary>❌</summary>are you sure? <details>
+            <summary>click->👍</summary>absolutely sure? <a class="delete" href="/{{ .FullFilename }}?remove=true">🗑️</a>
+        </details>
+    </details>
+    <details class="special">
+        <summary>✎</summary>
+        <form method="get" action="/{{ .FullFilename }}">
+            <input type=hidden name=rename value=true>
+            Rename to: <input type=text name=newname value="{{ .Filename }}">
+            <input type=submit>
+        </form>
+    </details>)
+</small><br> <audio controls preload="none">
+    <source src="/{{ .FullFilename }}?r={{$.Rand}}" type="audio/mpeg">
+    Your browser does not support the audio element.
+</audio><br><br>
+{{end}}
+{{else}}<h2>Nothing archived.</h2>{{end}}
+{{ template "postbody"}}
+{{end}}

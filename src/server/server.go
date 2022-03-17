@@ -18,11 +18,12 @@ import (
 	"github.com/gabriel-vasile/mimetype"
 	"github.com/h2non/filetype"
 	log "github.com/schollz/logger"
+	"github.com/schollz/streammyaudio/src/chat"
 	"github.com/schollz/streammyaudio/src/filecreated"
 )
 
-//go:embed template/*
-var templateContent embed.FS
+//go:embed template
+var templateFiles embed.FS
 
 //go:embed static/*
 var staticContent embed.FS
@@ -37,48 +38,52 @@ type stream struct {
 	done bool
 }
 
+type view struct {
+	Title     string
+	Page      string
+	FileNoExt string
+	Items     []string
+	Rand      string
+	Archived  []ArchivedFile
+	Message   string
+}
+
 // Serve will start the server
 func (s *Server) Run() (err error) {
+	go chat.Run()
 
-	p, err := templateContent.ReadFile("template/template.html")
-	if err != nil {
-		panic(err)
-	}
-	tplmain, err := template.New("webpage").Parse(string(p))
-	if err != nil {
-		return
-	}
+	tmpl := template.Must(template.ParseFS(templateFiles, "template/*"))
 
 	channels := make(map[string]map[float64]chan stream)
 	archived := make(map[string]*os.File)
 	advertisements := make(map[string]bool)
 	mutex := &sync.Mutex{}
 
-	serveMain := func(w http.ResponseWriter, r *http.Request, msg string) (err error) {
-		// serve the README
-		adverts := []string{}
-		mutex.Lock()
-		for advert := range advertisements {
-			adverts = append(adverts, strings.TrimPrefix(advert, "/"))
-		}
-		mutex.Unlock()
-
-		active := make(map[string]struct{})
-		data := struct {
-			Title    string
-			Items    []string
-			Rand     string
-			Archived []ArchivedFile
-			Message  string
-		}{
-			Title:    "Current broadcasts",
-			Items:    adverts,
-			Rand:     fmt.Sprintf("%d", rand.Int31()),
-			Archived: s.listArchived(active),
-			Message:  msg,
+	servePage := func(w http.ResponseWriter, r *http.Request, page string, msg string) (err error) {
+		data := view{
+			Page:    page,
+			Message: msg,
+			Rand:    fmt.Sprintf("%d", rand.Int31()),
 		}
 
-		err = tplmain.Execute(w, data)
+		switch page {
+		case "live":
+			adverts := []string{}
+			mutex.Lock()
+			for advert := range advertisements {
+				adverts = append(adverts, strings.TrimPrefix(advert, "/"))
+			}
+			mutex.Unlock()
+			data.Items = adverts
+		case "archive":
+			active := make(map[string]struct{})
+			data.Archived = s.listArchived(active)
+		}
+		log.Debugf("%s data: %+v", page, data)
+		err = tmpl.ExecuteTemplate(w, page, data)
+		if err != nil {
+			panic(err)
+		}
 		return
 	}
 	handler := func(w http.ResponseWriter, r *http.Request) {
@@ -92,11 +97,21 @@ func (s *Server) Run() (err error) {
 		}()
 
 		if r.URL.Path == "/" {
-			serveMain(w, r, "")
+			servePage(w, r, "sma", "")
 			return
 		} else if r.URL.Path == "/favicon.ico" {
 			w.WriteHeader(http.StatusOK)
 			return
+		} else if r.URL.Path == "/ws" {
+			chat.Serve(w, r)
+			return
+		} else if r.URL.Path == "/live" ||
+			r.URL.Path == "/archive" ||
+			r.URL.Path == "/download" {
+			log.Debugf("serving page %s", r.URL.Path)
+			servePage(w, r, r.URL.Path[1:], "")
+			return
+
 		} else if strings.HasPrefix(r.URL.Path, "/static/") {
 			filename := filepath.Clean(strings.TrimPrefix(r.URL.Path, "/static/"))
 			// This extra join implicitly does a clean and thereby prevents directory traversal
@@ -118,7 +133,7 @@ func (s *Server) Run() (err error) {
 			if ok && v[0] == "true" {
 				os.Remove(filename)
 				filename = strings.TrimPrefix(filename, "archived/")
-				serveMain(w, r, fmt.Sprintf("removed '%s'.", filename))
+				servePage(w, r, "archive", fmt.Sprintf("removed '%s'.", filename))
 			} else {
 				v, ok := r.URL.Query()["rename"]
 				if ok && v[0] == "true" {
@@ -134,12 +149,23 @@ func (s *Server) Run() (err error) {
 					os.Rename(filename, newname)
 					filename = strings.TrimPrefix(filename, "archived/")
 					newname = strings.TrimPrefix(newname, "archived/")
-					serveMain(w, r, fmt.Sprintf("renamed '%s' to '%s'.", filename, newname))
-					// w.Write([]byte(fmt.Sprintf("renamed %s to %s", filename, newname)))
+					servePage(w, r, "archive", fmt.Sprintf("renamed '%s' to '%s'.", filename, newname))
 				} else {
 					http.ServeFile(w, r, filename)
 				}
 			}
+			return
+		} else if !strings.HasSuffix(r.URL.Path, ".mp3") {
+			data := view{
+				Page:      "live",
+				FileNoExt: r.URL.Path[1:],
+				Rand:      fmt.Sprintf("%d", rand.Int31()),
+			}
+			err = tmpl.ExecuteTemplate(w, "chat", data)
+			if err != nil {
+				panic(err)
+			}
+
 			return
 		}
 

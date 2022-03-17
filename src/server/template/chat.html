@@ -1,0 +1,97 @@
+{{ define "chat" }}
+{{ template "prebody" . }}
+<style type="text/css">
+/*#log {
+    width: 100%;
+    font-family: inherit;
+    font-size: inherit;
+    padding: 0.5em;
+}
+*/
+#log {
+    width: 100%;
+    height: 100px;
+    font-family: inherit;
+    font-size: inherit;
+    padding: 0.5em;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #999;
+    overflow: scroll;
+}
+
+#form {
+    padding: 0.5em 0em 0em 0em;
+    width: 100%;
+    overflow: hidden;
+    font-family: inherit;
+    font-size: inherit;
+}
+</style>
+<!-- <textarea id="log" name="w3review" rows="4" cols="50">
+</textarea>
+ -->
+<a href="/{{ .FileNoExt }}.mp3">{{ .FileNoExt }}.mp3</a><br> <audio controls preload="none">
+    <source src="/{{ .FileNoExt }}.mp3?r={{$.Rand}}" type="audio/mpeg">
+    Your browser does not support the audio element.
+</audio>
+<div id="log" name="w3review" rows="4" cols="50">
+</div>
+<form id="form">
+    <input type="text" id="name" style="width: 20%;" value="yourname" /><input type="text" id="msg" autofocus style="width: 60%; margin-left:1em;" /> <input type="submit" value="Send" style="width: 10%;margin-left:1em;" />
+</form>
+<script type="text/javascript">
+window.onload = function() {
+    var conn;
+    var msg = document.getElementById("msg");
+    var log = document.getElementById("log");
+    var name = document.getElementById("name");
+
+    function appendLog(htmlstring) {
+        var item = document.createElement("div");
+        item.innerHTML = htmlstring;
+        var doScroll = log.scrollTop > log.scrollHeight - log.clientHeight - 1;
+        log.appendChild(item);
+        if (doScroll) {
+            log.scrollTop = log.scrollHeight - log.clientHeight;
+        }
+        // log.value += item + "\n";
+        // log.scrollTop = log.scrollHeight;
+
+    }
+
+    document.getElementById("form").onsubmit = function() {
+        if (!conn) {
+            console.log('no connection')
+            return false;
+        }
+        if (!msg.value) {
+            console.log('no msg')
+            return false;
+        }
+        console.log("sending " + msg.value)
+        let thetime = new Date().toLocaleTimeString();
+        conn.send(`<b>${name.value}</b> <small>${thetime}</small>: ${msg.value}`);
+        msg.value = "";
+        return false;
+    };
+
+    if (window["WebSocket"]) {
+        console.log("setting up websockets")
+        conn = new WebSocket(document.location.protocol.replace("http", "ws") + "//" + document.location.host + "/ws?room=" + document.location.pathname.substr(1));
+        conn.onclose = function(evt) {
+            appendLog("connection closed.");
+        };
+        conn.onmessage = function(evt) {
+            var messages = evt.data.split('\n');
+            for (var i = 0; i < messages.length; i++) {
+                appendLog(messages[i]);
+            }
+        };
+    } else {
+        appendLog("Your browser does not support WebSockets.");
+    }
+};
+</script>
+{{ template "postbody" . }}
+{{end}}

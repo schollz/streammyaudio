@@ -4,6 +4,8 @@ go 1.17
 
 require (
 	github.com/gabriel-vasile/mimetype v1.4.0
+	github.com/gorilla/mux v1.8.0
+	github.com/gorilla/websocket v1.5.0
 	github.com/h2non/filetype v1.1.3
 	github.com/manifoldco/promptui v0.9.0
 	github.com/schollz/logger v1.2.0

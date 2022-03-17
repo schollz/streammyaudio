@@ -25,7 +25,6 @@ func init() {
 	flag.StringVar(&streamName, "cast-name", "", "cast stream name")
 	flag.StringVar(&streamAdvertise, "cast-advertise", "", "cast stream advertise (yes/no)")
 	flag.StringVar(&streamArchive, "cast-archive", "", "cast stream archive (yes/no)")
-
 }
 
 func main() {
@@ -40,7 +39,6 @@ func main() {
 		log.SetLevel("info")
 	}
 
-	log.Debugf("ffmpeg binary: %s", ffmpegBinary)
 	var err error
 	if flagServer {
 		os.MkdirAll(flagFolder, os.ModePerm)

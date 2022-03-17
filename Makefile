@@ -1,3 +1,7 @@
+serve:
+	go build -v
+	./streammyaudio --debug --server 
+	
 build-all: build-linux build-windows build-mac
 
 build-linux:
