@@ -1,16 +1,76 @@
 {{ define "download" }}
 {{ template "prebody" . }}
+<h2>Download</h2>
 <p>
-    <strong>What <em>is</em> this?</strong> sma makes it easy to livestream your audio from any computer using a simple programs you just double click. That's it. Make a live podcast, stream your piano practice, whatever you'd like.
+    Its easy to install the software - just download the program, unzip it, and double-click. If you don't want to download a release, you can always build the program yourself from source.
 </p>
+<div class="bordered">
+    <details class="help">
+        <summary class="help">
+            <h3>No download</h3>
+        </summary>
+        <p>
+            You don't have to download anything to use this website. As long as you have <code>curl</code> and either <code>ffmpeg</code> or <code>vlc</code> then you can stream your audio to this website.
+        </p>
+        <p>
+            <strong>Create station using <code>ffmpeg</code></strong> with a simple line of code.
+        </p>
+        <pre><code>> # linux
+> ffmpeg -f alsa -i hw:0 -f mp3 - | \
+    curl -s -k -H "Transfer-Encoding: chunked" -X POST -T - \
+    "https://streamyouraudio.com/YOURSTATIONNAME.mp3?stream=true&advertise=true"</code></pre>
+        <p>
+            <strong>Create station using <code>vlc</code></strong> with a simple line of code.
+        </p>
+        <pre><code>> # linux
+> vlc -I dummy alsa://plughw:0,0 --sout='#transcode{vcodec=none,acodec=mp3,ab=256,channels=2,samplerate=44100,scodec=none}:standard{access=file,mux=mp3,dst=-}' --no-sout-all --sout-keep | \
+    curl -k -H "Transfer-Encoding: chunked" -X POST -T -  'https://streamyouraudio.com/YOURSTATIONNAME.mp3?stream=true&advertise=true'  
+> # mac os
+> vlc -I dummy -vvv qtsound:// --sout='#transcode{vcodec=none,acodec=mp3,ab=256,channels=2,samplerate=44100,scodec=none}:standard{access=file,mux=mp3,dst=-}' --no-sout-all --sout-keep | \
+    curl -k -H "Transfer-Encoding: chunked" -X POST -T -  'https://streamyouraudio.com/YOURSTATIONNAME.mp3?stream=true&advertise=true'</code></pre>
+    </details>
+</div>
+<div class="bordered mt1">
+    <details class="help">
+        <summary class="help">
+            <h3>Windows</h3>
+        </summary>
+        <p>
+            <strong>What <em>is</em> this?</strong> sma makes it easy to livestream your audio from any computer using a simple programs you just double click. That's it. Make a live podcast, stream your piano practice, whatever you'd like.
+        </p>
+    </details>
+</div>
+<div class="bordered mt1">
+    <details class="help">
+        <summary class="help">
+            <h3>Linux</h3>
+        </summary>
+        <p>
+            <strong>What <em>is</em> this?</strong> sma makes it easy to livestream your audio from any computer using a simple programs you just double click. That's it. Make a live podcast, stream your piano practice, whatever you'd like.
+        </p>
+    </details>
+</div>
+<div class="bordered mt1">
+    <details class="help">
+        <summary class="help">
+            <h3>Source</h3>
+        </summary>
+        <p>
+            Its easy to build from source. First download [Go](https://go.dev/dl/) for your operating system. Then you can clone and build the repostiory.
+        </p>
+        <pre><code>
+> git clone https://github.com/schollz/streamyouraudio
+> cd streamyouraudio
+> go build -v
+        </code></pre>
+        <p>Make sure you also have <code>ffmpeg</code> installed.</p>
+        <pre><code>
+> sudo apt install ffmpeg
+        </code></pre>
+    </details>
+</div>
 <p>
-    <strong>What <em>isn't</em> this?</strong> It's not twitch, it's not YouTube. There is no login, no usernames, no passwords, no costs. There is no branding, no engagement.
-</p>
-<p>
-    <strong>No logins?</strong> No logins. Your steam is given a name which you can share with others to access it. You can also"advertise" you're steam so it will be featured on the "live" page.
-</p>
-<p>
-    <strong>It's free?</strong> It is free. This is a simple website that costs me very little too run. Is yours like to donate to this site here's my Bitcoin address
+    If you have any problems with the download please feel free to <a href="https://github.com/schollz/streamyouraudio/issues/new/choose" target="_blank">create an issue on Github</a>.
 </p>
 {{ template "postbody" . }}
 {{end}}

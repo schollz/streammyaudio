@@ -97,7 +97,7 @@ func (s *Server) Run() (err error) {
 		}()
 
 		if r.URL.Path == "/" {
-			servePage(w, r, "sma", "")
+			servePage(w, r, "sya", "")
 			return
 		} else if r.URL.Path == "/favicon.ico" {
 			w.WriteHeader(http.StatusOK)
