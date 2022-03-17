@@ -1,20 +1,20 @@
 serve:
 	go build -v
 	./streammyaudio --debug --server 
-	
+
 build-all: build-linux build-windows build-mac
 
 build-linux:
-	go build -v -o cast_linux_amd64
-	zip cast_linux_amd64.zip cast_linux_amd64
+	go build -v -o streammyaudio
+	zip streammyaudio_linux_amd64.zip streammyaudio
 
 build-windows: ffmpeg.exe
-	GOOS=windows GOARCH=amd64 go build -v -o cast_windows_amd64
-	zip cast_windows_amd64.zip cast_windows_amd64
+	GOOS=windows GOARCH=amd64 go build -v -o streammyaudio.exe
+	zip streammyaudio_windows_amd64.zip streammyaudio.exe
 
 build-mac: ffmpeg
-	GOOS=darwin GOARCH=amd64 go build -v -o cast_macos_amd64
-	zip cast_macos_amd64.zip cast_macos_amd64
+	GOOS=darwin GOARCH=amd64 go build -v -o streammyaudio
+	zip streammyaudio_macos_amd64.zip streammyaudio
 
 ffmpeg.exe: ffmpeg-release-essentials.zip
 	unzip ffmpeg-release-essentials.zip
