@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="alternate" type="application/rss+xml" title="RSS Feed" href="https://schollz.com/index.xml" />
+    <meta name="robots" content="all,follow">
+    <title>a simple radio</title>
+    <meta name="description" content="">
+    <meta name="image" content="">
+    <meta itemprop="name" content="a simple radio">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="">
+    <meta name="twitter:card" content="">
+    <meta name="twitter:title" content="a simple radio">
+    <meta name="twitter:description" content="">
+    <meta name="twitter:site" content="">
+    <meta name="twitter:creator" content="">
+    <meta name="twitter:image:src" content="">
+    <meta name="og:title" content="a simple radio">
+    <meta name="og:description" content="">
+    <meta name="og:image" content="">
+    <meta name="og:url" content="https://schollz.com/">
+    <meta name="og:site_name" content="a simple radio">
+    <meta name="og:locale" content="en_US">
+    <meta name="og:type" content="website">
+    <link rel="apple-touch-icon" sizes="57x57" href="/static/favicon/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/static/favicon/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/static/favicon/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/static/favicon/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/static/favicon/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/static/favicon/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/static/favicon/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/static/favicon/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/favicon/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/static/favicon/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/static/favicon/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/static/favicon/favicon-16x16.png">
+    <link rel="manifest" href="/static/favicon/manifest.json">
+    <meta name="msapplication-TileColor" content="#161616">
+    <meta name="msapplication-TileImage" content="/static/favicon/ms-icon-144x144.png">
+    <meta name="theme-color" content="#161616">
+    <style type="text/css">
+    body {
+        margin: 0 auto;
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+        line-height: 1.6;
+        font-size: 1rem;
+        font-family: -apple-system, BlinkMacSystemFont, "avenir next", avenir,
+            helvetica, "helvetica neue", ubuntu, roboto, noto, "segoe ui", arial,
+            sans-serif;
+    }
+
+    .only-print {
+        display: none
+    }
+
+    a {
+        color: #000;
+        text-decoration-skip-ink: auto;
+        text-decoration: underline
+    }
+
+    a:visited {
+        color: #333
+    }
+
+    ul {
+        margin: 1rem 0
+    }
+
+    ul ul {
+        margin: 0
+    }
+
+    .small,
+    small {
+        font-size: 14px
+    }
+
+    body,
+    h1 a {
+        color: #111
+    }
+
+    h1,
+    h2 {
+        margin-bottom: .5rem;
+        line-height: 1.25;
+        font-weight: 600
+    }
+
+    h1 {
+        font-size: 32px;
+        letter-spacing: .004em
+    }
+
+    h2 {
+        font-size: 1.5rem;
+        letter-spacing: .009em
+    }
+
+    .limiter {
+        max-width: 640px;
+        padding-left: 20px;
+        padding-right: 20px;
+        margin-left: auto;
+        margin-right: auto
+    }
+
+    img {
+        width: 100%;
+    }
+
+    .pad2y {
+        padding-top: 20px;
+        padding-bottom: 20px
+    }
+
+    .writing {
+        display: grid;
+        grid-column-gap: 5px;
+        grid-row-gap: 5px;
+        grid-template-columns: 1fr min-content
+    }
+
+    .writing a {
+        font-weight: 500;
+        letter-spacing: -.015em
+    }
+
+    .writing>div {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis
+    }
+
+    .writing time {
+        padding-right: .25em;
+        color: #333;
+        font-variant-numeric: tabular-nums;
+        letter-spacing: -.012em;
+        white-space: pre
+    }
+
+    @media screen and (max-width:640px) {
+        .limiter {
+            width: auto
+        }
+
+        .writing {
+            grid-template-columns: 1fr;
+            grid-row-gap: 0
+        }
+
+        .writing div {
+            white-space: normal
+        }
+
+        .writing time {
+            padding-bottom: 20px
+        }
+
+    }
+
+    @media screen and (min-width:640px) {
+        .nu a {
+            text-decoration: none
+        }
+
+        .nu a:hover {
+            text-decoration: underline
+        }
+    }
+
+    @media screen and (max-width:1024px) {
+        .header-wrap {
+            border-bottom: 1px solid #000;
+        }
+
+
+        .socialmedia {
+            position: relative;
+            bottom: 30px;
+            margin: 0;
+            padding: 0;
+            top: 0px !important;
+        }
+
+        nav>div>ul>li {
+            float: left;
+            padding-right: 1em;
+            margin-bottom: 2em;
+        }
+
+    }
+
+    @media screen and (min-width:1025px) {
+        .header {
+            position: absolute;
+            top: 40px;
+            right: 50%;
+            margin-right: 340px !important;
+            letter-spacing: -.009em
+        }
+
+        .content h1:first-child {
+            margin-top: 0
+        }
+    }
+
+    @media print {
+        .no-print {
+            display: none
+        }
+
+        .only-print {
+            display: block
+        }
+
+        body {
+            margin: 0
+        }
+
+        .limiter {
+            max-width: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important
+        }
+    }
+
+    .m {
+        color: #007f7f
+    }
+
+    .s {
+        color: #d01040
+    }
+
+
+
+    pre {
+        margin-bottom: 20px;
+        vertical-align: text-bottom;
+        white-space: pre-wrap;
+        white-space: -moz-pre-wrap;
+        white-space: -pre-wrap;
+        white-space: -o-pre-wrap;
+        word-wrap: break-word;
+        padding: 1em;
+        text-shadow: none;
+        background: #f5f7f9;
+    }
+
+
+    pre>code {
+        background: transparent;
+        border: 0;
+        margin: 0;
+        padding: 0;
+        white-space: pre;
+        word-break: normal;
+    }
+
+    pre code {
+        background-color: transparent;
+        border: 0;
+        display: inline;
+        line-height: inherit;
+        margin: 0;
+        max-width: auto;
+        overflow: visible;
+        padding: 0;
+        word-wrap: normal;
+        font-size: 1.0rem;
+    }
+
+    pre {
+        word-wrap: normal;
+        background-color: #f6f8fa;
+        border-radius: 3px;
+        line-height: 1.45;
+        overflow: auto;
+        padding: 16px;
+    }
+
+    code {
+        background-color: rgba(27, 31, 35, .05);
+        border-radius: 3px;
+        margin: 0;
+        padding: .2em .4em;
+    }
+
+    p.description {
+        font-style: italic;
+        margin-bottom: 0;
+    }
+
+    .bordered {
+        width: 100%;
+        max-width: 640px;
+        border: 1px solid black;
+        padding: 1em;
+        position: relative;
+        left: -1em;
+        padding-top: 1.5em;
+        padding-bottom: 1.5em;
+        margin-bottom: 0;
+    }
+
+    .bordered>h1 {
+        margin-top: 0;
+    }
+
+    .bordered>p {
+        margin-bottom: 0;
+    }
+
+    .delete {
+        color: #000;
+        text-decoration: none;
+    }
+
+
+    summary {
+        white-space: nowrap;
+        cursor: pointer;
+    }
+
+    details>summary {
+        list-style: none;
+    }
+
+    details>summary::-webkit-details-marker {
+        display: none;
+    }
+
+    details {
+        display: inline;
+    }
+
+
+
+
+    summary.help:before {
+        content: "+";
+        color: black;
+        float: left;
+        position: relative;
+        left: -1em;
+    }
+
+    details.help[open] summary.help:before {
+        content: "-";
+    }
+    </style>
+</head>
+
+<body>
+    <nav class=header-wrap>
+        <div class="header nu limiter no-print">
+            <h1>simpleradio.com</h1>
+        </div>
+    </nav>
+    <div class="pad2y limiter content">
+        {{ with .Message }}
+        <div class="bordered">
+            {{.}}
+        </div>
+        {{end}}
+        <details class="help">
+            <summary class="help">
+                <h2 style="font-size:1.5em;font-weight:700;position:relative;left:-0.4em;">How to broadcast?</h2>
+            </summary>
+            <p><strong>Its easy.</strong> Simply download the release for your system and double click on it! It will do the rest. If you don't want to download, you can <a href="https://github.com/schollz/cast">compile it yourself from source</a>.</p>
+            <p><strong>Is it secure?</strong> No - all the broadcasts will be going through this public server. If you'd like, you can easily <a href="https://github.com/schollz/broadcast-server">run your own server</a>, since everything is open source.</p>
+        </details>
+        {{ if .Items}}
+        <h2>Live broadcasts:</h2>
+        {{range .Items}}<a href="/{{ . }}">{{ . }}</a><br> <audio controls preload="none">
+            <source src="/{{ . }}?r={{$.Rand}}" type="audio/mpeg">
+            Your browser does not support the audio element.
+        </audio><br><br>
+        {{end}}
+        {{else}}
+        <h2>No live broadcasts.</h2>
+        {{end}}
+        {{if .Archived}}
+        <h2>Archived broadcasts:</h2>
+        <p><small>click ❌ to remove an archive, ✎ to rename an archive (<em>maybe don't remove/rename ones that you didn't create</em>).</small></p>
+        {{range .Archived}}<a href="/{{ .FullFilename }}">{{ .Filename }}</a> <small>({{.Created.Format "Jan 02, 2006 15:04:05 UTC"}},
+            <details class="special">
+                <summary>❌</summary>are you sure? <details>
+                    <summary>click->👍</summary>absolutely sure? <a class="delete" href="/{{ .FullFilename }}?remove=true">🗑️</a>
+                </details>
+            </details>
+            <details class="special">
+                <summary>✎</summary>
+                <form method="get" action="/{{ .FullFilename }}">
+                    <input type=hidden name=rename value=true>
+                    Rename to: <input type=text name=newname value="{{ .Filename }}">
+                    <input type=submit>
+                </form>
+            </details>)
+        </small><br> <audio controls preload="none">
+            <source src="/{{ .FullFilename }}?r={{$.Rand}}" type="audio/mpeg">
+            Your browser does not support the audio element.
+        </audio><br><br>
+        {{end}}
+        {{else}}<h2>Nothing archived.</h2>{{end}}
+    </div>
+</body>
+
+</html>
