@@ -15,6 +15,7 @@ var flagDebug bool
 var flagPort int
 var flagFolder string
 var flagServer bool
+var flagQuality int
 
 // init initializes the clearScreen variable for MacOS, Linux, & Windows
 func init() {
@@ -26,6 +27,7 @@ func init() {
 	flag.StringVar(&streamAdvertise, "cast-advertise", "", "cast stream advertise (yes/no)")
 	flag.StringVar(&streamArchive, "cast-archive", "", "cast stream archive (yes/no)")
 	flag.StringVar(&streamServer, "cast-server", "https://streamyouraudio.com", "cast server address")
+	flag.IntVar(&flagQuality, "cast-quality", -1, "cast audio quality (0 = best to 9 = worst)")
 }
 
 func main() {
@@ -54,6 +56,7 @@ func main() {
 			Archive:   streamArchive,
 			Advertise: streamAdvertise,
 			Server:    streamServer,
+			Quality: flagQuality,
 		}
 		err = c.Run()
 	}
