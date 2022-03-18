@@ -15,6 +15,7 @@ import (
 	"text/template"
 	"time"
 
+	"github.com/dchest/captcha"
 	"github.com/gabriel-vasile/mimetype"
 	"github.com/h2non/filetype"
 	log "github.com/schollz/logger"
@@ -43,6 +44,7 @@ type view struct {
 	Page      string
 	FileNoExt string
 	Items     []string
+	Captcha   string
 	Rand      string
 	Archived  []ArchivedFile
 	Message   string
@@ -82,6 +84,7 @@ func (s *Server) Run() (err error) {
 		case "archive":
 			active := make(map[string]struct{})
 			data.Archived = s.listArchived(active)
+			data.Captcha = captcha.New()
 		}
 		log.Debugf("%s data: %+v", page, data)
 		err = tmpl.ExecuteTemplate(w, page, data)
@@ -109,6 +112,37 @@ func (s *Server) Run() (err error) {
 		} else if r.URL.Path == "/ws" {
 			chat.Serve(w, r)
 			return
+		} else if r.Method == "POST" && strings.HasPrefix(r.URL.Path, "/archive") {
+			filename := filepath.Clean(strings.TrimPrefix(r.FormValue("filename"), s.Folder))
+			// This extra join implicitly does a clean and thereby prevents directory traversal
+			filename = path.Join("/", filename)
+			filename = path.Join(s.Folder, filename)
+			action := r.FormValue("action")
+			log.Debugf("%s %s", action, filename)
+			if !captcha.VerifyString(r.FormValue("captchaId"), r.FormValue("captchaSolution")) {
+				servePage(w, r, "archive", fmt.Sprintf("Incorrect captcha, could not %s '%s'", action, filename))
+				return
+			}
+			msg := ""
+			if action == "remove" {
+				os.Remove(filename)
+				msg = fmt.Sprintf("Removed '%s", filename)
+			} else if action == "rename" {
+				newname := strings.TrimSpace(r.FormValue("newname"))
+				if !strings.HasSuffix(newname, ".mp3") {
+					servePage(w, r, "archive", "Cannot rename suffix '.mp3'.")
+					return
+				}
+				// This join with "/" prevents directory traversal with an implicit clean
+				newname = path.Join("/", newname)
+				newname = path.Join(s.Folder, newname)
+				os.Rename(filename, newname)
+				filename = strings.TrimPrefix(filename, "archived/")
+				newname = strings.TrimPrefix(newname, "archived/")
+				msg = fmt.Sprintf("Renamed '%s' to '%s'.", filename, newname)
+			}
+			servePage(w, r, "archive", msg)
+			return
 		} else if r.URL.Path == "/live" ||
 			r.URL.Path == "/archive" ||
 			r.URL.Path == "/download" {
@@ -127,37 +161,6 @@ func (s *Server) Run() (err error) {
 				log.Error(err)
 			}
 			w.Write(p)
-			return
-		} else if strings.HasPrefix(r.URL.Path, "/"+s.Folder+"/") {
-			filename := filepath.Clean(strings.TrimPrefix(r.URL.Path, "/"+s.Folder+"/"))
-			// This extra join implicitly does a clean and thereby prevents directory traversal
-			filename = path.Join("/", filename)
-			filename = path.Join(s.Folder, filename)
-			v, ok := r.URL.Query()["remove"]
-			if ok && v[0] == "true" {
-				os.Remove(filename)
-				filename = strings.TrimPrefix(filename, "archived/")
-				servePage(w, r, "archive", fmt.Sprintf("removed '%s'.", filename))
-			} else {
-				v, ok := r.URL.Query()["rename"]
-				if ok && v[0] == "true" {
-					newname_param, ok := r.URL.Query()["newname"]
-					if !ok {
-						w.Write([]byte(fmt.Sprintf("ERROR")))
-						return
-					}
-					// This join with "/" prevents directory traversal with an implicit clean
-					newname := newname_param[0]
-					newname = path.Join("/", newname)
-					newname = path.Join(s.Folder, newname)
-					os.Rename(filename, newname)
-					filename = strings.TrimPrefix(filename, "archived/")
-					newname = strings.TrimPrefix(newname, "archived/")
-					servePage(w, r, "archive", fmt.Sprintf("renamed '%s' to '%s'.", filename, newname))
-				} else {
-					http.ServeFile(w, r, filename)
-				}
-			}
 			return
 		} else if !strings.HasSuffix(r.URL.Path, ".mp3") {
 			data := view{
@@ -330,7 +333,10 @@ func (s *Server) Run() (err error) {
 	}
 
 	log.Infof("running on port %d", s.Port)
-	err = http.ListenAndServe(fmt.Sprintf(":%d", s.Port), http.HandlerFunc(handler))
+	http.Handle("/archived/", http.FileServer(http.Dir(".")))
+	http.Handle("/captcha/", captcha.Server(captcha.StdWidth, captcha.StdHeight))
+	http.HandleFunc("/", handler)
+	err = http.ListenAndServe(fmt.Sprintf(":%d", s.Port), nil)
 	if err != nil {
 		log.Error(err)
 	}
