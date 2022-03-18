@@ -23,6 +23,7 @@ type Client struct {
 	DeviceName string
 	Device     string
 	Server     string
+	Quality    int
 }
 
 func (c *Client) Run() (err error) {
@@ -98,7 +99,7 @@ func (c *Client) windowsSelectAudioDevice() (cmd *exec.Cmd, err error) {
 	if err != nil {
 		return
 	}
-	cmd = exec.Command(ffmpeg.Binary(), "-f", "dshow", "-i", "audio="+result, "-f", "mp3", "-")
+	cmd = exec.Command(ffmpeg.Binary(), "-f", "dshow", "-i", "audio="+result, "-f", "mp3", "-q:a", fmt.Sprint(c.Quality), "-")
 	return
 }
 
@@ -128,7 +129,7 @@ func (c *Client) linuxSelectAudioDevice() (cmd *exec.Cmd, err error) {
 	if err != nil {
 		return
 	}
-	cmd = exec.Command("ffmpeg", "-f", "alsa", "-i", fmt.Sprintf("hw:%d", i), "-f", "mp3", "-")
+	cmd = exec.Command("ffmpeg", "-f", "alsa", "-i", fmt.Sprintf("hw:%d", i), "-f", "mp3", "-q:a", fmt.Sprint(c.Quality), "-")
 	return
 }
 
@@ -164,7 +165,7 @@ func (c *Client) darwinSelectAudioDevice() (cmd *exec.Cmd, err error) {
 	if err != nil {
 		return
 	}
-	cmd = exec.Command(ffmpeg.Binary(), "-f", "avfoundation", "-i", fmt.Sprintf(":%d", i), "-f", "mp3", "-")
+	cmd = exec.Command(ffmpeg.Binary(), "-f", "avfoundation", "-i", fmt.Sprintf(":%d", i), "-f", "mp3", "-q:a", fmt.Sprint(c.Quality), "-")
 	return
 }
 
@@ -267,6 +268,24 @@ func (c *Client) getStreamInfo() (err error) {
 			return
 		}
 
+	}
+
+	if c.Quality < 0 || c.Quality > 9 {
+		prompt2 := promptui.Select{
+			Label: "select quality",
+			Items: []string{"best (260 kbps)", "good (165 kbps)", "poor (85 kbps)"},
+		}
+		var q int
+		q, _, err = prompt2.Run()
+		if err != nil {
+			return
+		}
+		c.Quality = q
+		if q == 1 {
+			c.Quality = 4
+		} else if q == 2 {
+			c.Quality = 8
+		}
 	}
 
 	if c.Advertise == "" {
