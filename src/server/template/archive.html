@@ -8,16 +8,26 @@
 <h2>Archived broadcasts:</h2>
 {{range .Archived}}<a href="/{{ .FullFilename }}">{{ .Filename }}</a> <small>({{.Created.Format "Jan 02, 2006 15:04:05 UTC"}},
     <details class="special">
-        <summary>❌</summary>are you sure? <details>
-            <summary>click->👍</summary>absolutely sure? <a class="delete" href="/{{ .FullFilename }}?remove=true">🗑️</a>
-        </details>
+        <summary class="special">🗑️</summary>
+        <img id=image src="/captcha/{{$.Captcha}}.png" style="width:200px;">
+        <form method="post" action="/archive">
+            <input type=hidden name=filename value="{{.FullFilename}}">
+            <input type=hidden name=action value=remove>
+            <input type=hidden name=captchaId value="{{$.Captcha}}">
+            <input type=text name=captchaSolution value="" placeholder="enter number">
+            <input type=submit value="remove">
+        </form>
     </details>
     <details class="special">
         <summary>✎</summary>
-        <form method="get" action="/{{ .FullFilename }}">
-            <input type=hidden name=rename value=true>
-            Rename to: <input type=text name=newname value="{{ .Filename }}">
-            <input type=submit>
+        <img id=image src="/captcha/{{$.Captcha}}.png" style="width:200px;">
+        <form method="post" action="/archive">
+            <input type=hidden name=filename value="{{.FullFilename}}">
+            <input type=hidden name=action value=rename>
+            <input type=hidden name=captchaId value="{{$.Captcha}}">
+            <input type=text name=captchaSolution value="" placeholder="enter number">
+            <input type=text name=newname value="{{ .Filename }}" placeholder="new name">
+            <input type=submit value="change name">
         </form>
     </details>)
 </small><br> <audio controls preload="none">
