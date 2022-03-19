@@ -48,25 +48,25 @@
                 <a href="https://github.com/yt-dlp/yt-dlp"><code>yt-dlp</code></a>
                 playlist
             </strong>
-            with a few simple lines of code.
+            with a few simple lines of code. (Thanks to <a href="https://github.com/SuperSonicHub1">@SuperSonicHub1</a>!)
         </p>
         <pre><code>#!/bin/bash
 # USAGE: stream-playlist playlist-url station-name
 
 yt-dlp-to-ffconcat() {
-	local url=$1
-	yt-dlp --format bestaudio --get-url "$url" | sed -e "s/^/file '/" | sed -e "s/$/'/"
+    local url=$1
+    yt-dlp --format bestaudio --get-url "$url" | sed -e "s/^/file '/" | sed -e "s/$/'/"
 }
 
 main() {
-	local url=$1
-	local station=$2
-	ffmpeg -protocol_whitelist file,http,https,tcp,tls,crypto \
-		-f concat -safe 0 -i <(yt-dlp-to-ffconcat "$url") \
-		-f mp3 -ar 44100 -b:a 256k - | \
-		cstream -t 64k | \
-    	curl -s -k -H "Transfer-Encoding: chunked" -X POST -T -  \
-    	"https://streammyaudio.com/$station.mp3?stream=true&advertise=true"
+    local url=$1
+    local station=$2
+    ffmpeg -protocol_whitelist file,http,https,tcp,tls,crypto \
+        -f concat -safe 0 -i <(yt-dlp-to-ffconcat "$url") \
+        -f mp3 -ar 44100 -b:a 256k - | \
+        cstream -t 64k | \
+        curl -s -k -H "Transfer-Encoding: chunked" -X POST -T -  \
+        "https://streammyaudio.com/$station.mp3?stream=true&advertise=true"
 }
 
 main "$@"
