@@ -12,8 +12,8 @@ import (
 	"time"
 
 	"github.com/manifoldco/promptui"
-	"github.com/schollz/streamyouraudio/src/clearscreen"
-	"github.com/schollz/streamyouraudio/src/ffmpeg"
+	"github.com/schollz/streammyaudio/src/clearscreen"
+	"github.com/schollz/streammyaudio/src/ffmpeg"
 )
 
 type Client struct {

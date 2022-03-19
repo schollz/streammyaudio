@@ -19,8 +19,8 @@ import (
 	"github.com/gabriel-vasile/mimetype"
 	"github.com/h2non/filetype"
 	log "github.com/schollz/logger"
-	"github.com/schollz/streamyouraudio/src/chat"
-	"github.com/schollz/streamyouraudio/src/filecreated"
+	"github.com/schollz/streammyaudio/src/chat"
+	"github.com/schollz/streammyaudio/src/filecreated"
 )
 
 //go:embed template

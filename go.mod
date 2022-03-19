@@ -1,4 +1,4 @@
-module github.com/schollz/streamyouraudio
+module github.com/schollz/streammyaudio
 
 go 1.17
 

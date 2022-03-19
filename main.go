@@ -6,8 +6,8 @@ import (
 	"runtime"
 
 	log "github.com/schollz/logger"
-	"github.com/schollz/streamyouraudio/src/client"
-	"github.com/schollz/streamyouraudio/src/server"
+	"github.com/schollz/streammyaudio/src/client"
+	"github.com/schollz/streammyaudio/src/server"
 )
 
 var streamName, streamAdvertise, streamArchive, streamServer string
@@ -26,7 +26,7 @@ func init() {
 	flag.StringVar(&streamName, "cast-name", "", "cast stream name")
 	flag.StringVar(&streamAdvertise, "cast-advertise", "", "cast stream advertise (yes/no)")
 	flag.StringVar(&streamArchive, "cast-archive", "", "cast stream archive (yes/no)")
-	flag.StringVar(&streamServer, "cast-server", "https://streamyouraudio.com", "cast server address")
+	flag.StringVar(&streamServer, "cast-server", "https://streammyaudio.com", "cast server address")
 	flag.IntVar(&flagQuality, "cast-quality", -1, "cast audio quality (0 = best to 9 = worst)")
 }
 

@@ -18,16 +18,16 @@
         <pre><code>> # linux
 > ffmpeg -f alsa -i hw:0 -f mp3 - | \
     curl -s -k -H "Transfer-Encoding: chunked" -X POST -T - \
-    "https://streamyouraudio.com/YOURSTATIONNAME.mp3?stream=true&advertise=true"</code></pre>
+    "https://streammyaudio.com/YOURSTATIONNAME.mp3?stream=true&advertise=true"</code></pre>
         <p>
             <strong>Create station using <code>vlc</code></strong> with a simple line of code.
         </p>
         <pre><code>> # linux
 > vlc -I dummy alsa://plughw:0,0 --sout='#transcode{vcodec=none,acodec=mp3,ab=256,channels=2,samplerate=44100,scodec=none}:standard{access=file,mux=mp3,dst=-}' --no-sout-all --sout-keep | \
-    curl -k -H "Transfer-Encoding: chunked" -X POST -T -  'https://streamyouraudio.com/YOURSTATIONNAME.mp3?stream=true&advertise=true'  
+    curl -k -H "Transfer-Encoding: chunked" -X POST -T -  'https://streammyaudio.com/YOURSTATIONNAME.mp3?stream=true&advertise=true'  
 > # mac os
 > vlc -I dummy -vvv qtsound:// --sout='#transcode{vcodec=none,acodec=mp3,ab=256,channels=2,samplerate=44100,scodec=none}:standard{access=file,mux=mp3,dst=-}' --no-sout-all --sout-keep | \
-    curl -k -H "Transfer-Encoding: chunked" -X POST -T -  'https://streamyouraudio.com/YOURSTATIONNAME.mp3?stream=true&advertise=true'</code></pre>
+    curl -k -H "Transfer-Encoding: chunked" -X POST -T -  'https://streammyaudio.com/YOURSTATIONNAME.mp3?stream=true&advertise=true'</code></pre>
     </details>
 </div>
 <div class="bordered mt1">
@@ -59,8 +59,8 @@
             Its easy to build from source. First download [Go](https://go.dev/dl/) for your operating system. Then you can clone and build the repostiory.
         </p>
         <pre><code>
-> git clone https://github.com/schollz/streamyouraudio
-> cd streamyouraudio
+> git clone https://github.com/schollz/streammyaudio
+> cd streammyaudio
 > go build -v
         </code></pre>
         <p>Make sure you also have <code>ffmpeg</code> installed.</p>
@@ -70,7 +70,7 @@
     </details>
 </div>
 <p>
-    If you have any problems with the download please feel free to <a href="https://github.com/schollz/streamyouraudio/issues/new/choose" target="_blank">create an issue on Github</a>.
+    If you have any problems with the download please feel free to <a href="https://github.com/schollz/streammyaudio/issues/new/choose" target="_blank">create an issue on Github</a>.
 </p>
 {{ template "postbody" . }}
 {{end}}
