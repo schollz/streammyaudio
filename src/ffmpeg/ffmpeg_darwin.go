@@ -21,7 +21,9 @@ func Binary() string {
 	log.Debugf("loaded ffmpeg: %d", len(b))
 	if !loadedDarwin {
 		loadedDarwin = true
-		ioutil.WriteFile("./ffmpeg", b, 0777)
+		go func() {
+			ioutil.WriteFile("./ffmpeg", b, 0777)
+		}()
 	}
 	return "./ffmpeg"
 }

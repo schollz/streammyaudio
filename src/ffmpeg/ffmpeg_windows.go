@@ -14,7 +14,9 @@ var loaded bool
 func Binary() string {
 	if !loaded {
 		loaded = true
-		ioutil.WriteFile("./ffmpeg.exe", b, 0777)
+		go func() {
+			ioutil.WriteFile("./ffmpeg.exe", b, 0777)
+		}()
 	}
 	return "./ffmpeg.exe"
 }
