@@ -6,3 +6,6 @@ website: https://streammyaudio.com
 
 blog: https://schollz.com/blog/stream
 
+## License
+
+GPL
