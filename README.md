@@ -1,6 +1,6 @@
 # stream your audio
 
-This program/server lets you livestream audio as easy as possible, from your computer to a website ([streammyaudio.com](https://streammyaudio.com) by default). How easy? You should be able to just [download a release](https://github.com/schollz/streammyaudio/releases/latest), double-click it, and stream!
+This program/server lets you livestream audio from your computer to a website *as easily as possible*. How easy? You should be able to just [download a release](https://github.com/schollz/streammyaudio/releases/latest), double-click it, and stream!
 
 Use it to play demos for people you know, or make a live podcast, or stream your piano practice, or whatever you'd like.
 
