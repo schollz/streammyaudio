@@ -55,7 +55,7 @@ make build-mac
 for most macs, or
 
 ```
-make build-mac-arm`
+make build-mac-arm
 ```
 
 for M1 macs. These will automatically bundle with the right version of `ffmpeg`.
