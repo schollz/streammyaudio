@@ -32,6 +32,10 @@
         <pre><code>> # linux
 > ffmpeg -f alsa -i hw:0 -f mp3 - | \
     curl -s -k -H "Transfer-Encoding: chunked" -X POST -T - \
+    "https://streammyaudio.com/YOURSTATIONNAME.mp3?stream=true&advertise=true"
+> # mac os
+> ffmpeg -f avfoundation -i ":default" -f mp3 - | \
+    curl -s -k -H "Transfer-Encoding: chunked" -X POST -T - \
     "https://streammyaudio.com/YOURSTATIONNAME.mp3?stream=true&advertise=true"</code></pre>
         <p>
             <strong>Create station using <code>vlc</code></strong> with a simple line of code.
